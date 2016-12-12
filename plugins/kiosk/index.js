@@ -212,6 +212,7 @@ exports.init = function (y, config, messages, cron, logger) {
 
 			res.render('index.ejs', {
 				'layout' : 'layout.ejs',
+				'profile' : y.user(req.userId),
 				'req' : req,
 				'res' : res,
 				'items' : items.all(),
@@ -631,6 +632,7 @@ exports.init = function (y, config, messages, cron, logger) {
 				'layout' : 'layout.ejs',
 				'req' : req,
 				'res' : res,
+				'profile' : y.user(userId),
 				'account' : account,
 				'booking' : booking,
 				'item' : item, 
@@ -813,6 +815,7 @@ exports.init = function (y, config, messages, cron, logger) {
 				'layout' : 'layout.ejs',
 				'req' : req,
 				'res' : res,
+				'profile' : y.user(userId),
 				'account' : accounts.get(userId),
 				'booking' : booking,
 				'item' : item
@@ -830,6 +833,7 @@ exports.init = function (y, config, messages, cron, logger) {
 				'layout' : 'layout.ejs',
 				'req' : req,
 				'res' : res,
+				'profile' : y.user(userId),
 				'account' : accounts.get(userId)
 			});
 		});
@@ -848,6 +852,7 @@ exports.init = function (y, config, messages, cron, logger) {
 				'layout' : 'layout.ejs',
 				'req' : req,
 				'res' : res,
+				'profile' : y.user(userId),
 				'account' : account,
 				'booking' : booking,
 				'item' : item
