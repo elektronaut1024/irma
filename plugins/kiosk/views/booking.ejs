@@ -3,7 +3,7 @@
 	</div>
 </div>
 
-<%- partial('partials/booking', { 'booking' : booking }) %>
+<%- partial('partials/buchung', { 'buchung' : booking }) %>
 
 <div class="row">
 	<div class="span12">
@@ -28,11 +28,11 @@
 			<dd><%= booking.id() %>
 			</dd>
 			<dt>Time</dt>
-			<dd><%=: booking.time() | isodate %></dd>
+			<dd><%= format.isodate(booking.time()) %></dd>
 			<dt>Amount</dt>
-			<dd><%=: booking.amount() / 100 | money %></dd>
+			<dd><%= format.money(booking.amount() / 100) %></dd>
 			<dt>Type</dt>
-			<dd><%=: booking.type() | capitalize %></dd>
+			<dd><%= format.capitalize(booking.type()) %></dd>
 			<% if (booking.itemId()) { %>
 			<dt>Item</dt>
 			<dd><a href="/item/<%= booking.itemId() %>"><%= booking.name() %></a></dd>
@@ -53,13 +53,3 @@
 	</div>
 </div>
 <% } %>
-
-<footer>
-<div class="row">
-	<div class="span12" style="text-align: center;">
-		<a class="btn btn-large" href="/">Home</a>
-		<a class="btn btn-large" href="/account">View account</a>
-		<a style="display:inline-block; margin-left: 18px;" href="/about"><img src="/img/irma.svg" style="height: 47px;" /></a>
-	</div>
-</div>
-</footer>

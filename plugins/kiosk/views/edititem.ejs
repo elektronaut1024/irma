@@ -44,7 +44,7 @@
 
 			<div class="control-group">
 				<label for="input-price">Price</label>
-				<input id="input-price" name="price" type="number" step="0.05" value="<%-: item.price() / 100 | money %>" class="span2" />
+				<input id="input-price" name="price" type="number" step="0.05" value="<%- format.money(item.price() / 100) %>" class="span2" />
 			</div>
 
 			<div class="control-group">
@@ -91,13 +91,3 @@
 		</form>
 	</div>
 </div>
-
-<footer>
-<div class="row">
-	<div class="span12" style="text-align: center;">
-		<a class="btn btn-large" href="/">Home</a>
-		<a class="btn btn-large btn-primary" href="/admin">Admin</a>
-		<a style="display:inline-block; margin-left: 18px;" href="/about"><img src="/img/irma.svg" style="height: 47px;" /></a>
-	</div>
-</div>
-</footer>

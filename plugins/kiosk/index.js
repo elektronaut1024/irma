@@ -1,5 +1,9 @@
 "use strict";
 
+var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
+var partials = require('express-partials');
+
 exports.init = function (y, config, messages, cron, logger) {
 	messages.add('kiosk_monthly_archive', "Hey [name], I have archived all your Kiosk bookings for [month]. This is the automatic monthly archive. \nYour current account balance is CHF [balance]");
 	messages.add('kiosk_initialize', "Hey [name], I have initialized your digital kiosk account. Your current account balance is CHF [balance]");
@@ -50,29 +54,6 @@ exports.init = function (y, config, messages, cron, logger) {
 		j = (j = i.length) > 3 ? j % 3 : 0;
 
 		return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
-	};
-
-	ejs.filters.isodate = function (time) {
-		return new Date(time).toString("yyyy-MM-dd HH:mm:ss");
-	};
-
-	ejs.filters.isodate_short = function (time) {
-		return new Date(time).toString("MM-dd HH:mm");
-	};
-
-	ejs.filters.fancy_timestamp = function (time) {
-		return fancyTimestamp(time, true);
-	};
-
-	ejs.filters.round = function (num) {
-		var dec = 2;
-		return Math.round(num * Math.pow(10, dec)) / Math.pow(10, dec);
-	};
-
-
-
-	ejs.filters.money = function (n) {
-		return formatMoney(n);
 	};
 
 	pluginDir = __dirname;
@@ -162,16 +143,51 @@ exports.init = function (y, config, messages, cron, logger) {
 		});
 	};
 
-	app = express.createServer(
-//		express.logger(),
-		express.static(publicDir),
-		express.bodyParser(),
-		express.cookieParser()
-	);
+	app = express();
 
-	app.configure(function () {
-		app.set('views', viewsDir);
-	});
+	app.use(partials());	
+	app.use(express.static(publicDir));
+	app.use(cookieParser());
+	app.use(bodyParser.urlencoded({ extended: false }));
+
+	var format = {};
+
+	format.truncate = function (text,length) {
+		return text.substr(0,length);
+	};
+
+	format.downcase = function (text) {
+		return text.toLowerCase();
+	};
+
+	format.capitalize = function (text) {
+		return text.toUpperCase();
+	};
+
+	format.isodate = function (time) {
+		return new Date(time).toString("yyyy-MM-dd HH:mm:ss");
+	};
+
+	format.isodate_short = function (time) {
+		return new Date(time).toString("MM-dd HH:mm");
+	};
+
+	format.fancy_timestamp = function (time) {
+		return fancyTimestamp(time, true);
+	};
+
+	format.round = function (num) {
+		var dec = 2;
+		return Math.round(num * Math.pow(10, dec)) / Math.pow(10, dec);
+	};
+
+	format.money = function (n) {
+		return formatMoney(n);
+	};
+
+	app.locals.format = format;
+
+	app.set('views', viewsDir);
 
 	app.listen(config.kiosk.port, function () {
 		console.log('Kiosk running on port ' + config.kiosk.port);

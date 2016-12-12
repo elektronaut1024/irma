@@ -1,6 +1,6 @@
 "use strict";
 
-var uuid = require('node-uuid');
+var uuid = require('uuid');
 
 var Booking = function (data) {
 	if (typeof data.reversed === 'undefined') { data.reversed = false; }

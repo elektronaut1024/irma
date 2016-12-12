@@ -1,33 +1,66 @@
 <%
-	var depositClass = (page === 'deposit') ? 'active' : '';
-	var withdrawClass = (page === 'withdraw') ? 'active' : '';
-	var tallyClass = (page === 'tally') ? 'active' : '';
-	var stocklistClass = (page === 'stocklist') ? 'active' : '';
-	var moreClass = (page === 'initialize' || page === 'items' || page === 'log') ? 'active' : '';
-	var initializeClass = (page === 'initialize') ? 'active' : '';
-	var itemsClass = (page === 'items') ? 'active' : '';
-	var logClass = (page === 'log') ? 'active' : '';
+	var pages = {
+		deposit: 'Dep.',
+		withdraw: 'Wit.',
+		tally: 'Tly.',
+		stocklist: 'Sto.',
+		more:{
+			label: 'Mor.',
+			subMenu: {
+				initialize: 'Initialize',
+				items: 'Items',
+				log: 'Log',
+				logout: 'Logout',
+			}
+		}
+	};
+	
+	function isAdminPage(pages,activePage){
+		for ( var page in pages ) {
+			if ( page === activePage ) {
+				pages[page].active == true;
+				return true;
+			}
+
+			if ( !pages[page].subMenu ) continue;
+
+			for ( var subpage in pages[page].subMenu ) {
+				if ( subpage === activePage ) {
+					pages[page].active == true;
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	if ( !isAdminPage(pages,activePage) ) return;
 %>
 <div class="row" style="margin-top: 18px;">
 	<div class="span12">
 		<ul class="nav nav-tabs">
-			<li class="<%= depositClass %>"> <a href="/deposit">Dep.</a></li>
-			<li class="<%= withdrawClass %>"> <a href="/withdraw">Wit.</a> </li>
-			<li class="<%= tallyClass %>"> <a href="/tally">Tly.</a> </li>
-			<li class="<%= stocklistClass %>"> <a href="/stocklist">Sto.</a> </li>
-			<li class="dropdown <%= moreClass %>"> 
-				<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-					Mor.
-					<b class="caret"></b>
-				</a> 
-				<ul class="dropdown-menu">
-					<li class="<%= initializeClass %>"> <a href="/initialize">Initialize</a> </li>
-					<li class="<%= itemsClass %>"> <a href="/items">Items</a> </li>
-					<li class="<%= logClass %>"> <a href="/log">Log</a> </li>
-					<li> <a href="/logout">Logout</a> </li>
-				</ul>
-			</li>
+			<% for ( var page in pages ) { %>
+				<% if ( pages[page].subMenu ) { %>
+					<li class="dropdown <%= (pages[page].active == page?'active':'') %>">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+							<%= pages[page].label %>
+							<b class="caret"></b>
+						</a> 
+						<ul class="dropdown-menu">
+							<% for ( var subpage in pages[page].subMenu ) { %>
+								<li class="<%= (activePage == subpage?'active':'') %>">
+									<a href="/<%= subpage %>"><%= pages[page].subMenu[subpage] %></a>
+								</li>
+							<% } %>
+						</ul>
+					</li>
+				<% } else { %>
+					<li class="<%= (pages[page].active?'active':'') %>">
+						<a href="/<%= page %>"><%= pages[page] %></a>
+					</li>
+				<% } %>
+			<% } %>
 		</ul>
 	</div>
 </div>
-

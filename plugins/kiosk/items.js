@@ -3,8 +3,7 @@
 require('datejs');
 var path = require('path');
 var fs = require('fs');
-var revjsion = require('revjsion');
-var uuid = require('node-uuid');
+var uuid = require('uuid');
 
 var itemIds = [];
 var items = {};
@@ -147,45 +146,11 @@ Item.prototype.setData = function (data) {
 };
 
 Item.prototype.updateData = function (data) {
-	if (typeof this._data.item.name !== 'undefined') { 
-		this.saveDiff(this.itemData(), data);
-	}
 	this.setData(data);
 };
 
-Item.prototype.saveDiff = function (originalData, newData) {
-	var diff, changes, update, change, field;
-
-	if (typeof this._data.changes === 'undefined') this._data.changes = [];
-
-	diff = new revjsion.Diff(originalData, newData);
-	changes = diff.getChanges();
-
-	if (changes.length === 0) { return; }
-
-	update = {
-		'time' : Date.now(), 
-		'changes' : []
-	};
-
-	for (var i = 0; i < changes.length; i++) {
-		field = changes[i].path.replace('/', '');
-
-		change = {
-			'field' : field,
-			'originalValue' : originalData[field],
-			'newValue' : changes[i].value
-		};
-
-		update.changes.push(change);
-	}
-
-	this._data.changes.push(update);
-};
-
 Item.prototype.changes = function () {
-	if (typeof this._data.changes === 'undefined') { return []; }
-	return this._data.changes;
+	return [];
 };
 
 exports.dataDir = null;

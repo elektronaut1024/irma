@@ -17,8 +17,8 @@
 		<% var bookings = account.bookings(); 
 		for (var i = bookings.length -1; i >= 0; --i) { %>
 		<tr id="booking-<%= bookings[i].id() %>">
-			<td><a href="/booking/<%= bookings[i].id() %>"><time><%-: bookings[i].time() | isodate_short %></time></a></td>
-			<td><%=: bookings[i].name() | truncate:17 %> 
+			<td><a href="/booking/<%= bookings[i].id() %>"><time><%- format.isodate_short(bookings[i].time()) %></time></a></td>
+			<td><%= format.truncate(bookings[i].name(),17) %> 
 			<% if (bookings[i].reversed()) { %>
 				<span class="label label-important">reversed</span> 
 			<% } %>
@@ -33,7 +33,7 @@
 			</td>
 
 			<% var posneg = (bookings[i].amount() < 0) ? 'negative' : 'positive'; %>
-			<td style="min-width: 3em;text-align: right;" class="<%= posneg %>"><%-: bookings[i].amount() / 100 | money %></td>
+			<td style="min-width: 3em;text-align: right;" class="<%= posneg %>"><%- format.money(bookings[i].amount() / 100) %></td>
 		</tr>
 		<% } %>
 	</tbody>
@@ -42,13 +42,3 @@
 
 	</div>
 </div>
-
-
-<footer>
-<div class="row">
-	<div class="span12" style="text-align: center;">
-		<a class="btn btn-large" href="/">Home</a>
-		<a style="display:inline-block; margin-left: 18px;" href="/about"><img src="/img/irma.svg" style="height: 47px;" /></a>
-	</div>
-</div>
-</footer>

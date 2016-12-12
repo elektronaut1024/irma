@@ -8,8 +8,8 @@
 			<span class="id">Booking #<%= booking.id() %></span>
 			<span class="info">
 				<span class="label"><%= booking.type() %></span>
-				<i class="icon-time"></i> <time title="<%-: booking.time() | isodate %>"><%-: booking.time() | isodate %></time>
-				<span class="amount <%= posneg %>"><%=: booking.amount() / 100 | money %></span>
+				<i class="icon-time"></i> <time title="<%- format.isodate(booking.time()) %>"><%- format.isodate(booking.time()) %></time>
+				<span class="amount <%= posneg %>"><%= format.money(booking.amount() / 100) %></span>
 			</span>
 		</a>
 	</div>

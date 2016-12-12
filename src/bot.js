@@ -20,59 +20,62 @@ var cron = require('cron');
 var logger = require('../lib/logger');
 var messages = require('../lib/messages');
 var plugins = require('../lib/plugins');
-var Yammer = require('../lib/yammer').Yammer;
 var cwd = process.cwd();
-
-var load_config = function () {
-	if (fs.existsSync(cwd + '/config.json')) {
-		var config_data = fs.readFileSync(cwd + '/config.json', 'utf8');
-		return JSON.parse(config_data);
-	}
-
-	util.puts('Error: Configuration file not found');
-	process.exit(1);
-};
-
-var config = load_config();
-var yammer_account = config.yammer;
 
 logger.setPrefix(function () {
 	var d = new Date().toISODateTime();
 	return '[' + d + '] ';
 });
 
-//process.on('uncaughtException', function (ex) {
-//	logger.error('uncaught exception: ' + ex);
-//});
+var config = require('../config.json');
+var userMap = {};
+var users = require('../users.json').map(function(data){
+	var user = {
+		id: function() { return data.id; },
+		fullName: function() { return data.fullName; },
+		mugshot: function() { return '/mugshots/'+data.id+'.jpg'; }
+	};
+	
+	userMap[data.id] = user;
+	
+	return user;
+})
 
-var y = new Yammer(yammer_account.email, yammer_account.api.consumer_key, yammer_account.api.consumer_secret, function (authorizeURI, continueCallback) {
-	util.puts(authorizeURI);
-	util.puts('Please visit the link above, \nauthorize the request and enter the verifier code: ');
+var y = {
+	users:function(){
+		return userMap;
+	},
+	user: function(id){
+		if ( !userMap[id] ) throw new Error('user not found ('+ id +')');
+		return userMap[id];
+	},
+	on: function(event,cb){
+		console.log(event);
+	},
+	sendMessage: function(cb){
+		var msg = {
+			threadId: function(){
+				
+			}
+		};
 
-	process.stdin.resume();
-	process.stdin.setEncoding('utf8');
-	process.stdin.on('data', function (chunk) {
-		process.stdin.pause();
-		continueCallback(chunk.toString());
-	});
-});
+		var error = null;
+		
+		cb(error,msg);
+	},
+	thread: function(threadId){
+		return {
+			id:threadId,
+			properties: {},
+			setProperty: function(key,value){
+				this.properties[key] = value;
+			}
+		}
+	},
+	persistThread: function(thread){
+		console.log(thread);
+	}
+}
 
-messages.init(y.profileDir());
-plugins.load(y, config, messages, cron, logger, cwd + '/plugins');
-
-y.on('error', function (error) {
-	logger.error(JSON.stringify(error));
-});
-
-y.on('loggedon', function () {
-	logger.info('logged on');
-	y.loadUsers();
-});
-
-y.on('usersloaded', function () {
-	logger.info('users loaded');
-	y.pollMessages();
-	y.pollPrivateMessages();
-});
-
-y.logon();
+var kiosk = require('../plugins/kiosk/index.js');
+kiosk.init(y, config, messages, cron, logger);

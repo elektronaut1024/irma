@@ -1,6 +1,3 @@
-
-<%- partial('partials/adminnav', { 'page' : 'items' }) %>
-
 <div class="row">
 	<div class="span12">
 		<table class="table table-striped table-bordered">
@@ -23,14 +20,14 @@
 					</td>
 					<td>
 					<% if (items[id].isStockable()) { %>
-						<%= items[id].ration() %> <%=: items[id].unit() | downcase %>
+						<%= items[id].ration() %> <%= format.downcase(items[id].unit()) %>
 					<% } %>
 					</td>
 					<td>
 					<% if (items[id].isStockable()) { %> <span class="label label-info">stock</span> <% } %>
 					<% if (items[id].isBuyable()) { %> <span class="label label-info">buy</span> <% } %>
 					</td>
-					<td style="text-align: right"><%-: items[id].price() / 100 | money %></td>
+					<td style="text-align: right"><%- format.money(items[id].price() / 100) %></td>
 				</tr>
 			<% } %>
 			</tbody>
@@ -44,14 +41,3 @@
 		</div>
 	</div>
 </div>
-
-
-<footer>
-<div class="row">
-	<div class="span12" style="text-align: center;">
-		<a class="btn btn-large" href="/">Home</a>
-		<a class="btn btn-large" href="/account">View account</a>
-		<a style="display:inline-block; margin-left: 18px;" href="/about"><img src="/img/irma.svg" style="height: 47px;" /></a>
-	</div>
-</div>
-</footer>
