@@ -56,6 +56,7 @@ var init = function (users) {
 		data = fs.readFileSync(logFilePath, 'utf8');
 		entries = JSON.parse(data);
 		initialized = true;
+		console.log('found existing log');
 		return;
 	}
 
@@ -73,6 +74,8 @@ var init = function (users) {
 			persist();
 		}
 	}
+	
+	console.log('read entries from users');
 
 	initialized = true;
 };

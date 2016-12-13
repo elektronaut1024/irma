@@ -50,6 +50,12 @@ var y = {
 		return userMap[id];
 	},
 	on: function(event,cb){
+		switch ( event ) {
+			case 'usersloaded':
+				cb();
+				return;
+		}
+		
 		console.log(event);
 	},
 	sendMessage: function(cb){
