@@ -18,7 +18,7 @@ exports.init = function (y, config, messages, cron, logger) {
 		fs = require('fs'),
 		express = require('express'),
 		ejs = require('ejs'),
-		sanitize = require('validator').sanitize,
+		validator = require('validator'),
 		fancyTimestamp = require('fancy-timestamp'),
 		items = require('./items'),
 		Item = items.Item,
@@ -1013,14 +1013,14 @@ exports.init = function (y, config, messages, cron, logger) {
 
 			newData = {
 				'id' : item.id(),
-				'name' : sanitize(req.body.name).trim(),
-				'description' : sanitize(req.body.description).trim(),
-				'price' : parseInt(sanitize(req.body.price).toFloat() * 100, 10),
-				'displayPrice' : sanitize(req.body.displayprice).trim(),
-				'buyable' : sanitize(req.body.buyable).toBoolean(),
-				'stockable' : sanitize(req.body.stockable).toBoolean(),
-				'unit' : sanitize(req.body.unit).trim(),
-				'ration' : sanitize(req.body.ration).toInt()
+				'name' : validator.trim(req.body.name),
+				'description' : validator.trim(req.body.description),
+				'price' : parseInt(validator.toFloat(req.body.price) * 100, 10),
+				'displayPrice' : validator.trim(req.body.displayprice),
+				'ration' : validator.toInt(req.body.ration),
+				'unit' : validator.trim(req.body.unit),
+				'buyable' : req.body.buyable?validator.toBoolean(req.body.buyable):false,
+				'stockable' : req.body.stockable?validator.toBoolean(req.body.stockable):false
 			};
 
 			item.updateData(newData);
